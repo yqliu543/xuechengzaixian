@@ -1,5 +1,6 @@
 package com.xuecheng.model.dto;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.Data;
 
 /**
