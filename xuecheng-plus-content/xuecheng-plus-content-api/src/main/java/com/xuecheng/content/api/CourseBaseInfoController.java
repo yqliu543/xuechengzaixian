@@ -23,7 +23,7 @@ public class CourseBaseInfoController {
     @Autowired
     CourseBaseInfoService courseBaseInfoService;
 
-    @PostMapping("/content/list")
+    @PostMapping("/course/list")
     @ApiOperation("课程查询接口")
     public PageResult<CourseBase> list(PageParams params, @RequestBody QueryCourseParamsDto queryCourseParamsDto){
         return courseBaseInfoService.querCourseBaseList(params,queryCourseParamsDto);

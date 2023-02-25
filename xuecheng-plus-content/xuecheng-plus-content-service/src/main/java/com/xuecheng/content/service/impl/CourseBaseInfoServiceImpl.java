@@ -44,6 +44,7 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
         //根据审核状态模糊查询
         queryWrapper.eq(StringUtils.isNotEmpty(queryCourseParamsDto.getAuditStatus()),CourseBase::getAuditStatus,queryCourseParamsDto.getAuditStatus());
         //根据课程发布状态模糊查询
+        queryWrapper.eq(StringUtils.isNotEmpty(queryCourseParamsDto.getPublishStatus()),CourseBase::getStatus,queryCourseParamsDto.getPublishStatus());
 
         //分页参数
         Page<CourseBase> page = new Page<>(params.getPageNo(), params.getPageSize());
