@@ -45,11 +45,12 @@ public class CourseBaseInfoController {
     }
 
 
-    @ApiOperation("查询课程")
+    @ApiOperation("修改课程")
     @PutMapping("/course")
     public CourseBaseInfoDto modifycourse(EditCourseDto editCourseDto){
-
-        return null;
+        Long companyId=22l;
+        CourseBaseInfoDto courseBaseInfoDto = courseBaseInfoService.updateCourseBase(companyId, editCourseDto);
+        return courseBaseInfoDto;
     }
 
 }
