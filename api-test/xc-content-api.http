@@ -7,3 +7,6 @@ Content-Type: application/json
   "courseName": "",
   "publishStatus": ""
 }
+### 查询课程计划
+GET http://localhost:63040/content/teachplan/117/tree-nodes
+Content-Type: application/json
