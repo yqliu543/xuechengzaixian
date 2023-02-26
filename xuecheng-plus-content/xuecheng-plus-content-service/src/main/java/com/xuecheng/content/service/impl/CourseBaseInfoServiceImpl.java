@@ -110,9 +110,12 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
     public CourseBaseInfoDto getCourseBaseInfo(Long courseId) {
         CourseBase courseBase = courseBaseMapper.selectById(courseId);
         CourseMarket courseMarket = courseMarketMapper.selectById(courseId);
+
         CourseBaseInfoDto courseBaseInfoDto = new CourseBaseInfoDto();
         BeanUtils.copyProperties(courseBase,courseBaseInfoDto);
-        BeanUtils.copyProperties(courseMarket,courseBaseInfoDto);
+        if (courseMarket!=null){
+            BeanUtils.copyProperties(courseMarket,courseBaseInfoDto);
+        }
         String st = courseBase.getSt();
         String mt = courseBase.getMt();
         CourseCategory stcourseCategory = courseCategoryMapper.selectById(st);
