@@ -16,6 +16,9 @@ public class XueChengPlusException extends RuntimeException{
     public static void cast(CommonError commonError){
         throw  new XueChengPlusException(commonError.getErrMessage());
     }
+    public static void cast(String commonError){
+        throw  new XueChengPlusException(commonError);
+    }
 
     public String getErrMessage() {
         return errMessage;
