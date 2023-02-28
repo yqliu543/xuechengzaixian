@@ -38,9 +38,9 @@ public class  MediaFilesController {
   Long companyId = 1232141425L;
   return mediaFileService.queryMediaFiels(companyId,pageParams,queryMediaParamsDto);
  }
-
- @RequestMapping(value = "/upload/coursefile",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
- public UploadFileResultDto upload(@RequestPart("filedata")MultipartFile filedata,
+ @ApiOperation("上传文件接口")
+ @RequestMapping(value = "/upload/coursefile",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+ public UploadFileResultDto upload(@RequestPart("filedata") MultipartFile filedata,
                                    @RequestParam(value = "folder",required = false) String folder,
                                    @RequestParam(value = "objectName",required = false) String objectName){
      Long companyId = 1232141425L;
