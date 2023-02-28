@@ -21,3 +21,13 @@ Content-Disposition: form-data; name="filedata"; filename="1.jpg"
 Content-Type: application/octet-stream
 
 < d:/develop/upload/1.jpg
+
+###课程查询接口
+POST {{media_host}}/media/files?pageNo=1&pageSize=10
+Content-Type: application/json
+
+{
+  "filename": "202004",
+  "fileType": "",
+  "auditStatus": ""
+}
