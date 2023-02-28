@@ -104,5 +104,7 @@ public class MediaFiles implements Serializable {
      */
     private String auditMind;
 
+    private String filePath;
+
 
 }

@@ -14,6 +14,7 @@ import com.xuecheng.media.service.MediaFileService;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.errors.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -35,6 +37,7 @@ import java.util.List;
  * @date 2022/9/10 8:58
  * @version 1.0
  */
+@Slf4j
  @Service
 public class MediaFileServiceImpl implements MediaFileService {
 
@@ -77,7 +80,7 @@ public class MediaFileServiceImpl implements MediaFileService {
         if (StringUtils.isEmpty(objectName)){
             objectName=fileMd5+filename.substring(filename.lastIndexOf("."));
         }
-
+        objectName=folder+objectName;
         try {
             String contentType = dto.getContentType();
             ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
@@ -92,15 +95,24 @@ public class MediaFileServiceImpl implements MediaFileService {
             if (mediaFiles==null){
                 mediaFiles=new MediaFiles();
                 BeanUtils.copyProperties(dto,mediaFiles);
-                mediaFiles.setId(fileMd5);
+//                mediaFiles.setId();
                 mediaFiles.setFileId(fileMd5);
                 mediaFiles.setCompanyId(companyId);
                 mediaFiles.setBucket(bucket_files);
-                mediaFiles.setFileP
+                mediaFiles.setFilename(filename);
+                mediaFiles.setFilePath(objectName);
+                mediaFiles.setUrl("/"+bucket_files+"/"+objectName);
+                mediaFiles.setCreateDate(LocalDateTime.now());
+                mediaFiles.setStatus("1");
+                mediaFiles.setAuditStatus("002003");
+                mediaFilesMapper.insert(mediaFiles);
             }
-
+            UploadFileResultDto uploadFileResultDto = new UploadFileResultDto();
+            BeanUtils.copyProperties(mediaFiles,uploadFileResultDto);
+            return uploadFileResultDto;
         } catch (Exception e) {
             e.printStackTrace();
+            log.debug("上传文件失败");
         }
         return null;
     }

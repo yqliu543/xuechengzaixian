@@ -1,8 +1,10 @@
 package com.xuecheng.media.api;
 
+import com.xuecheng.base.exception.XueChengPlusException;
 import com.xuecheng.base.model.PageParams;
 import com.xuecheng.base.model.PageResult;
 import com.xuecheng.media.model.dto.QueryMediaParamsDto;
+import com.xuecheng.media.model.dto.UploadFileParamsDto;
 import com.xuecheng.media.model.dto.UploadFileResultDto;
 import com.xuecheng.media.model.po.MediaFiles;
 import com.xuecheng.media.service.MediaFileService;
@@ -13,6 +15,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 /**
  * @description 媒资文件管理接口
  * @author Mr.M
@@ -21,7 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
  */
  @Api(value = "媒资文件管理接口",tags = "媒资文件管理接口")
  @RestController
-public class MediaFilesController {
+public class  MediaFilesController {
 
 
   @Autowired
@@ -37,9 +41,24 @@ public class MediaFilesController {
 
  @RequestMapping(value = "/upload/coursefile",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
  public UploadFileResultDto upload(@RequestPart("filedata")MultipartFile filedata,
-                                   @RequestParam("folder") String folder,
-                                   @RequestParam("onjectName") String objectName){
-     //return mediaFileService.uploadFile(filedata.getBytes(),folder,objectName);
+                                   @RequestParam(value = "folder",required = false) String folder,
+                                   @RequestParam(value = "onjectName",required = false) String objectName){
+     Long companyId = 1232141425L;
+     UploadFileParamsDto uploadFileParamsDto = new UploadFileParamsDto();
+     uploadFileParamsDto.setFilename(filedata.getOriginalFilename());
+     uploadFileParamsDto.setFileSize(filedata.getSize());
+     uploadFileParamsDto.setContentType(filedata.getContentType());
+     if (filedata.getContentType().indexOf("image")>=0){
+         uploadFileParamsDto.setFileType("001001");
+     }else {
+         uploadFileParamsDto.setFileType("001003");
+     }
+     try {
+         return mediaFileService.uploadFile(companyId,filedata.getBytes(),uploadFileParamsDto,folder,objectName);
+     } catch (IOException e) {
+         e.printStackTrace();
+         XueChengPlusException.cast("上传出错");
+     }
      return null;
  }
 

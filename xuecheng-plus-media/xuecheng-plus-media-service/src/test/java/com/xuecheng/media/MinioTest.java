@@ -33,8 +33,8 @@ public class MinioTest {
             minioClient.uploadObject(
                     UploadObjectArgs.builder()
                             .bucket("testbucket")
-                            .object("笔记.doc")
-                            .filename("D:\\develop\\upload\\笔记.doc")
+                            .object("1.jpg")
+                            .filename("D:\\develop\\upload\\1.jpg")
                             .build());
             //上传1.avi,上传到avi子目录
             //minioClient.uploadObject(
@@ -64,9 +64,8 @@ public class MinioTest {
 
     }
     public static void main(String[] args)throws IOException, NoSuchAlgorithmException, InvalidKeyException {
-        //upload();
-        delete("testbucket","笔记.doc");
-        delete("testbucket","笔记.doc");
+        upload();
+//        delete("testbucket","1.jpg");
     }
 
 
