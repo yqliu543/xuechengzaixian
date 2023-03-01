@@ -37,4 +37,6 @@ public interface MediaFileService {
   * @return
   */
  public UploadFileResultDto uploadFile(Long companyId, byte[] bytes, UploadFileParamsDto dto,String floader,String objectName);
+
+ public MediaFiles addMediaFilesToDb(Long companyId,String fileMd5,UploadFileParamsDto uploadFileParamsDto,String bucket,String objectName);
 }
