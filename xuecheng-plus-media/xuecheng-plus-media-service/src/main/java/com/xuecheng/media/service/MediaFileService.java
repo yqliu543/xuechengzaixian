@@ -81,4 +81,14 @@ public interface MediaFileService {
   * @date 2022/9/13 15:56
   */
  public RestResponse mergechunks(Long companyId,String fileMd5,int chunkTotal,UploadFileParamsDto uploadFileParamsDto);
+
+
+ /**
+  * @description 根据id查询文件信息
+  * @param id  文件id
+  * @return com.xuecheng.media.model.po.MediaFiles 文件信息
+  * @author Mr.M
+  * @date 2022/9/13 17:47
+  */
+ public MediaFiles getFileById(String id);
 }

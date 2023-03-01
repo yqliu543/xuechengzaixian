@@ -52,7 +52,7 @@ public class MediaFileServiceImpl implements MediaFileService {
     MinioClient minioClient;
     @Value("${minio.bucket.files}")
     private String bucket_files;
-    @Value("${minio.bucket.viedofiles}")
+    @Value("${minio.bucket.videofiles}")
     private String bucket_viedofiles;
     @Autowired
     private MediaFileService currentproxy;
@@ -164,7 +164,14 @@ public class MediaFileServiceImpl implements MediaFileService {
      */
     @Transactional
     public MediaFiles addMediaFilesToDb(Long companyId, String fileMd5, UploadFileParamsDto uploadFileParamsDto, String bucket, String objectName) {
-
+        //根据文件名称取出媒体类型
+        //扩展名
+        String extension = null;
+        if(objectName.indexOf(".")>=0){
+            extension = objectName.substring(objectName.lastIndexOf("."));
+        }
+        //获取扩展名对应的媒体类型
+        String contentType = getMimeTypeByExtension(extension);
         //从数据库查询文件
         MediaFiles mediaFiles = mediaFilesMapper.selectById(fileMd5);
         if (mediaFiles == null) {
@@ -174,7 +181,10 @@ public class MediaFileServiceImpl implements MediaFileService {
             mediaFiles.setId(fileMd5);
             mediaFiles.setFileId(fileMd5);
             mediaFiles.setCompanyId(companyId);
-            mediaFiles.setUrl("/" + bucket + "/" + objectName);
+            //图片及mp4文件设置url
+            if(contentType.indexOf("image")>=0 || contentType.indexOf("mp4")>=0){
+                mediaFiles.setUrl("/" + bucket + "/" + objectName);
+            }
             mediaFiles.setBucket(bucket);
             mediaFiles.setFilePath(objectName);
             mediaFiles.setCreateDate(LocalDateTime.now());
@@ -325,6 +335,11 @@ public class MediaFileServiceImpl implements MediaFileService {
 
             }
         }
+    }
+
+    @Override
+    public MediaFiles getFileById(String id) {
+        return mediaFilesMapper.selectById(id);
     }
 
     private String getFilePathByMd5(String fileMd5, String fileExt) {

@@ -32,14 +32,6 @@ public class BigFilesController {
     @Autowired
     MediaFileService mediaFileService;
 
-
-    @ApiOperation("视频文件管理接口")
-    @PostMapping("/files")
-    public PageResult<MediaFiles> list(PageParams pageParams, @RequestBody QueryMediaParamsDto queryMediaParamsDto) {
-        Long companyId = 1232141425L;
-        return mediaFileService.queryMediaFiels(companyId, pageParams, queryMediaParamsDto);
-    }
-
     @ApiOperation(value = "文件上传前检查文件")
     @PostMapping("/upload/checkfile")
     public RestResponse<Boolean> checkfile(
