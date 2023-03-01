@@ -6,7 +6,6 @@ import com.xuecheng.media.model.dto.QueryMediaParamsDto;
 import com.xuecheng.media.model.dto.UploadFileParamsDto;
 import com.xuecheng.media.model.dto.UploadFileResultDto;
 import com.xuecheng.media.model.po.MediaFiles;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
