@@ -50,6 +50,7 @@ public class MediaFileProcessServiceImpl implements MediaFileProcessService {
         if ("3".equals(status)) {
             MediaProcess mediaProcess1 = new MediaProcess();
             mediaProcess1.setStatus("3");//处理失败
+            mediaProcess1.setErrormsg(errorMsg);
             mediaProcessMapper.update(mediaProcess1,queryWrapper);
             return;
         }

@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author itcast
@@ -57,6 +57,10 @@ public class MediaProcess implements Serializable {
      * 媒资文件访问地址
      */
     private String url;
+
+    private String filePath;
+
+    private String errormsg;
 
 
 }

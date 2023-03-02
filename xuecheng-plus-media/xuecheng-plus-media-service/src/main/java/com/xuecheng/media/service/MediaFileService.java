@@ -8,6 +8,7 @@ import com.xuecheng.media.model.dto.UploadFileParamsDto;
 import com.xuecheng.media.model.dto.UploadFileResultDto;
 import com.xuecheng.media.model.po.MediaFiles;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -91,4 +92,7 @@ public interface MediaFileService {
   * @date 2022/9/13 17:47
   */
  public MediaFiles getFileById(String id);
+
+ public File downloadFileFromMinIO(File file, String bucket, String objectName);
+ public void addMediaFilesToMinIO(String filePath, String bucket, String objectName);
 }
