@@ -9,11 +9,13 @@ import com.xuecheng.base.model.PageParams;
 import com.xuecheng.base.model.PageResult;
 import com.xuecheng.media.config.MinioConfig;
 import com.xuecheng.media.mapper.MediaFilesMapper;
+import com.xuecheng.media.mapper.MediaProcessMapper;
 import com.xuecheng.media.model.dto.QueryMediaParamsDto;
 import com.xuecheng.media.model.dto.RestResponse;
 import com.xuecheng.media.model.dto.UploadFileParamsDto;
 import com.xuecheng.media.model.dto.UploadFileResultDto;
 import com.xuecheng.media.model.po.MediaFiles;
+import com.xuecheng.media.model.po.MediaProcess;
 import com.xuecheng.media.service.MediaFileService;
 import io.minio.*;
 import io.minio.errors.*;
@@ -56,6 +58,8 @@ public class MediaFileServiceImpl implements MediaFileService {
     private String bucket_viedofiles;
     @Autowired
     private MediaFileService currentproxy;
+    @Autowired
+    private MediaProcessMapper mapperProcessMapper;
 
     @Override
     public PageResult<MediaFiles> queryMediaFiels(Long companyId, PageParams pageParams, QueryMediaParamsDto queryMediaParamsDto) {
@@ -195,7 +199,13 @@ public class MediaFileServiceImpl implements MediaFileService {
             if (insert < 0) {
                 XueChengPlusException.cast("保存文件信息失败");
             }
-
+            //对avi视频填加到待处理任务
+            if (contentType.equals("video/x-msvideo")) {
+                MediaProcess mediaProcess = new MediaProcess();
+                BeanUtils.copyProperties(mediaFiles,mediaProcess);
+                mediaProcess.setStatus("1");
+                mapperProcessMapper.insert(mediaProcess);
+            }
         }
         return mediaFiles;
 
