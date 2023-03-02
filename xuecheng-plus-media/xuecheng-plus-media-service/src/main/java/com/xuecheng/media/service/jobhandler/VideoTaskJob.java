@@ -39,7 +39,7 @@ public class VideoTaskJob {
     private String ffmpegpath;
 
 
-    @XxlJob("shardingJobHandler")
+    @XxlJob("videoJobHandler")
     public void shardingJobHandler() throws Exception {
 
         // 分片参数

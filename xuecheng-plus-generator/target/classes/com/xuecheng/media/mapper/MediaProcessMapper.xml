@@ -8,15 +8,17 @@
         <result column="file_id" property="fileId" />
         <result column="filename" property="filename" />
         <result column="bucket" property="bucket" />
+        <result column="file_path" property="filePath" />
         <result column="status" property="status" />
         <result column="create_date" property="createDate" />
         <result column="finish_date" property="finishDate" />
         <result column="url" property="url" />
+        <result column="errormsg" property="errormsg" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, file_id, filename, bucket, status, create_date, finish_date, url
+        id, file_id, filename, bucket, file_path, status, create_date, finish_date, url, errormsg
     </sql>
 
 </mapper>

@@ -8,12 +8,12 @@
         <result column="company_id" property="companyId" />
         <result column="company_name" property="companyName" />
         <result column="filename" property="filename" />
-        <result column="type" property="type" />
+        <result column="file_type" property="fileType" />
         <result column="tags" property="tags" />
         <result column="bucket" property="bucket" />
+        <result column="file_path" property="filePath" />
         <result column="file_id" property="fileId" />
         <result column="url" property="url" />
-        <result column="timelength" property="timelength" />
         <result column="username" property="username" />
         <result column="create_date" property="createDate" />
         <result column="change_date" property="changeDate" />
@@ -21,11 +21,12 @@
         <result column="remark" property="remark" />
         <result column="audit_status" property="auditStatus" />
         <result column="audit_mind" property="auditMind" />
+        <result column="file_size" property="fileSize" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, company_id, company_name, filename, type, tags, bucket, file_id, url, timelength, username, create_date, change_date, status, remark, audit_status, audit_mind
+        id, company_id, company_name, filename, file_type, tags, bucket, file_path, file_id, url, username, create_date, change_date, status, remark, audit_status, audit_mind, file_size
     </sql>
 
 </mapper>

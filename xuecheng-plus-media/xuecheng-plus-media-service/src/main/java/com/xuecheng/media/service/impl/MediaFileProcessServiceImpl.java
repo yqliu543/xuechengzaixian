@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -54,9 +55,14 @@ public class MediaFileProcessServiceImpl implements MediaFileProcessService {
             mediaProcessMapper.update(mediaProcess1,queryWrapper);
             return;
         }
-        if ("3".equals(status)) {
+        if ("2".equals(status)) {
             mediaProcess.setStatus("2");
+            mediaProcess.setUrl(url);
+            mediaProcess.setFinishDate(LocalDateTime.now());
             mediaProcessMapper.updateById(mediaProcess);
+            MediaFiles mediaFiles = mediaFilesMapper.selectById(fileId);
+            mediaFiles.setUrl(url);
+            mediaFilesMapper.updateById(mediaFiles);
         }
         MediaProcessHistory mediaProcessHistory = new MediaProcessHistory();
         BeanUtils.copyProperties(mediaProcess,mediaProcessHistory);
