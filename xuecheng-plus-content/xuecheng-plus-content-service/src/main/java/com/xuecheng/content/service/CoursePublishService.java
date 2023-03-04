@@ -51,4 +51,13 @@ public interface CoursePublishService {
      */
     public void  uploadCourseHtml(Long courseId,File file);
 
+    /**
+    *@description 创建索引
+    *@param courseId
+    *@return boolean
+    *@author lyq
+    *@date 2023/3/4 15:00
+    */
+    public boolean saveCourseIndex(Long courseId);
+
 }

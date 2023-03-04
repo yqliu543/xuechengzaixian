@@ -5,6 +5,7 @@ import com.xuecheng.base.exception.CommonError;
 import com.xuecheng.base.exception.XueChengPlusException;
 import com.xuecheng.content.config.MultipartSupportConfig;
 import com.xuecheng.content.feignclient.MediaServiceClient;
+import com.xuecheng.content.feignclient.SearchServiceClient;
 import com.xuecheng.content.mapper.CourseBaseMapper;
 import com.xuecheng.content.mapper.CourseMarketMapper;
 import com.xuecheng.content.mapper.CoursePublishMapper;
@@ -12,10 +13,7 @@ import com.xuecheng.content.mapper.CoursePublishPreMapper;
 import com.xuecheng.content.model.dto.CourseBaseInfoDto;
 import com.xuecheng.content.model.dto.CoursePreviewDto;
 import com.xuecheng.content.model.dto.TeachplanDto;
-import com.xuecheng.content.model.po.CourseBase;
-import com.xuecheng.content.model.po.CourseMarket;
-import com.xuecheng.content.model.po.CoursePublish;
-import com.xuecheng.content.model.po.CoursePublishPre;
+import com.xuecheng.content.model.po.*;
 import com.xuecheng.content.service.CourseBaseInfoService;
 import com.xuecheng.content.service.CoursePublishService;
 import com.xuecheng.content.service.TeachplanService;
@@ -66,6 +64,8 @@ public class CoursePublishServiceImpl implements CoursePublishService {
     private MqMessageService mqMessageService;
     @Autowired
     private MediaServiceClient mediaServiceClient;
+    @Autowired
+    private SearchServiceClient searchServiceClient;
 
     @Override
     public CoursePreviewDto getCoursePreviewInfo(Long courseId) {
@@ -226,6 +226,19 @@ public class CoursePublishServiceImpl implements CoursePublishService {
             XueChengPlusException.cast("远程调用媒资服务上传文件失败");
         }
         file.delete();
+    }
+
+    @Override
+    public boolean saveCourseIndex(Long courseId) {
+        //查询课程
+        CoursePublish coursePublish = coursePublishMapper.selectById(courseId);
+        CourseIndex courseIndex = new CourseIndex();
+        BeanUtils.copyProperties(coursePublish,courseIndex);
+        Boolean result = searchServiceClient.add(courseIndex);
+        if (!result){
+            XueChengPlusException.cast("创建索引失败");
+        }
+        return result;
     }
 
     private void saveCoursePublishMessage(Long courseId) {

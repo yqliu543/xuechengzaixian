@@ -10,9 +10,9 @@ import com.xxl.job.core.handler.annotation.XxlJob;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Description:
@@ -80,8 +80,29 @@ public class CoursePublishTask extends MessageProcessAbstract {
     }
     //生成课程静态化页面并上传至文件系统
     private void saveCourseCache(MqMessage mqMessage, long courseId) {
+        log.debug("将课程信息缓存至redis,课程id:{}",courseId);
+        try {
+            TimeUnit.SECONDS.sleep(2);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
     }
     //保存课程索引信息
     public  void saveCourseIndex(MqMessage mqMessage, long courseId) {
+        log.debug("开始进行课程静态化,课程id:{}",courseId);
+        //消息id
+        Long id = mqMessage.getId();
+        //消息处理的service
+        MqMessageService mqMessageService = this.getMqMessageService();
+        //消息幂等性处理
+        int stageTwo = mqMessageService.getStageTwo(id);
+        if(stageTwo>0){
+            log.debug("当前阶段是创建课程索引已经完成不再处理,任务信息:{}",mqMessage);
+            return ;
+        }
+        boolean result = coursePublishService.saveCourseIndex(courseId);
+        //保存第二阶段状态
+        mqMessageService.completedStageTwo(id);
     }
 }
