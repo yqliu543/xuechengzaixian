@@ -1,6 +1,7 @@
 package com.xuecheng.auth.config;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -18,9 +19,13 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
  * @date 2022/9/26 20:53
  */
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true,prePostEnabled = true)
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Bean
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
 
     //配置用户信息服务
     @Bean
@@ -34,9 +39,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-//        //密码为明文方式
+        //        //密码为明文方式
         return NoOpPasswordEncoder.getInstance();
-//        return new BCryptPasswordEncoder();
+        //        return new BCryptPasswordEncoder();
     }
 
     //配置安全拦截机制
@@ -48,9 +53,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().permitAll()//其它请求全部放行
                 .and()
                 .formLogin().successForwardUrl("/login-success");//登录成功跳转到/login-success
-                http.logout().logoutUrl("/logout");//退出地址
+        http.logout().logoutUrl("/logout");//退出地址
     }
-
 
 
 }
