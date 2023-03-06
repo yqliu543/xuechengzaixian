@@ -241,6 +241,12 @@ public class CoursePublishServiceImpl implements CoursePublishService {
         return result;
     }
 
+    @Override
+    public CoursePublish getCoursePublish(Long courseId) {
+        CoursePublish coursePublish = coursePublishMapper.selectById(courseId);
+        return coursePublish ;
+    }
+
     private void saveCoursePublishMessage(Long courseId) {
         MqMessage message = mqMessageService.addMessage("course_publish", String.valueOf(courseId), null, null);
         if (message==null){
