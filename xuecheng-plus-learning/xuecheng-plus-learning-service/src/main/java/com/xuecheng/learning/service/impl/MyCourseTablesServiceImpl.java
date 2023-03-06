@@ -93,12 +93,12 @@ public class MyCourseTablesServiceImpl implements MyCourseTablesService {
     */
     public XcCourseTablesDto getLeanringStatus(String userId, Long courseId){
         XcCourseTables xcCourseTables = getXcCourseTables(userId, courseId);
+        XcCourseTablesDto xcCourseTablesDto = new XcCourseTablesDto();
         if(xcCourseTables==null){
-            XcCourseTablesDto xcCourseTablesDto = new XcCourseTablesDto();
-            xcCourseTablesDto.setLearnStatus("702002");
+            xcCourseTablesDto.setLearnStatus("702002");//没有学习资格，还没支付
             return xcCourseTablesDto;
         }
-        XcCourseTablesDto xcCourseTablesDto = new XcCourseTablesDto();
+        //XcCourseTablesDto xcCourseTablesDto = new XcCourseTablesDto();
         BeanUtils.copyProperties(xcCourseTables,xcCourseTablesDto);
         //是否过期,true过期，false未过期
         boolean isExpires = xcCourseTables.getValidtimeEnd().isBefore(LocalDateTime.now());
