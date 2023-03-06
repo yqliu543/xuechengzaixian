@@ -21,8 +21,6 @@ public class UserServiceImpl implements UserDetailsService {
     @Autowired
     XcUserMapper xcUserMapper;
     @Autowired
-    AuthService authService;
-    @Autowired
     ApplicationContext applicationContext;
 
     @Override
