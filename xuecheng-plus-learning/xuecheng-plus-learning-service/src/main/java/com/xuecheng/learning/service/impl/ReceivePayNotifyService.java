@@ -7,6 +7,7 @@ import com.xuecheng.messagesdk.model.po.MqMessage;
 import com.xuecheng.messagesdk.service.MqMessageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.ExchangeTypes;
+import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
@@ -42,9 +43,11 @@ public class ReceivePayNotifyService {
 //
 //    ))
     @RabbitListener(queues = PayNotifyConfig.CHOOSECOURSE_PAYNOTIFY_QUEUE)
-    public void receive(String message) {
+    public void receive(Message message) {
+        byte[] body = message.getBody();
+        String s = new String(body);
         //获取消息
-        MqMessage mqMessage = JSON.parseObject(message, MqMessage.class);
+        MqMessage mqMessage = JSON.parseObject(s, MqMessage.class);
         log.debug("学习中心服务接收支付结果:{}", mqMessage);
 
         //获取选课记录id

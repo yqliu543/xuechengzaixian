@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.xuecheng.base.exception.XueChengPlusException;
 import com.xuecheng.base.utils.IdWorkerUtils;
 import com.xuecheng.base.utils.QRCodeUtil;
+import com.xuecheng.messagesdk.model.po.MqMessage;
+import com.xuecheng.messagesdk.service.MqMessageService;
+import com.xuecheng.orders.config.PayNotifyConfig;
 import com.xuecheng.orders.mapper.XcOrdersGoodsMapper;
 import com.xuecheng.orders.mapper.XcOrdersMapper;
 import com.xuecheng.orders.mapper.XcPayRecordMapper;
@@ -16,6 +19,12 @@ import com.xuecheng.orders.model.po.XcOrdersGoods;
 import com.xuecheng.orders.model.po.XcPayRecord;
 import com.xuecheng.orders.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageBuilder;
+import org.springframework.amqp.core.MessageBuilderSupport;
+import org.springframework.amqp.core.MessageDeliveryMode;
+import org.springframework.amqp.rabbit.connection.CorrelationData;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +32,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -49,6 +59,10 @@ public class OrderServiceImpl implements OrderService {
     private XcOrdersGoodsMapper xcOrdersGoodsMapper;
     @Autowired
     private XcPayRecordMapper payRecordMapper;
+    @Autowired
+    private MqMessageService mqMessageService;
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     @Override
     public PayRecordDto createOrder(String userId, AddOrderDto addOrderDto) {
@@ -76,7 +90,7 @@ public class OrderServiceImpl implements OrderService {
         XcPayRecord xcPayRecord = payRecordMapper.selectOne(new LambdaQueryWrapper<XcPayRecord>().eq(XcPayRecord::getPayNo, payNo));
         return xcPayRecord;
     }
-
+    @Transactional
     @Override
     public void saveAliPayStatus(PayStatusDto payStatusDto) {
         //支付结果
@@ -109,7 +123,7 @@ public class OrderServiceImpl implements OrderService {
             int update = payRecordMapper.update(xcPayRecord, new LambdaQueryWrapper<XcPayRecord>().eq(XcPayRecord::getPayNo, payNo));
             if (update > 0) {
                 log.info("收到支付通知，更新支付交易状态成功.付交易流水号:{},支付结果:{}", payNo, trade_status);
-                Long payNo1 = payRecord.getOrderId();
+
             } else {
                 log.error("收到支付通知，更新支付交易状态失败.支付交易流水号:{},支付结果:{}", payNo, trade_status);
 
@@ -128,6 +142,10 @@ public class OrderServiceImpl implements OrderService {
                 int update1 = ordersMapper.update(order_u, new LambdaQueryWrapper<XcOrders>().eq(XcOrders::getId, orderId));
                 if (update1 > 0) {
                     log.info("收到支付通知，更新订单状态成功.付交易流水号:{},支付结果:{},订单号:{},状态:{}", payNo, trade_status, orderId, "600002");
+                    //想消息表插入数据
+                    String outBusinessId = orders.getOutBusinessId();
+                    MqMessage mqMessage = mqMessageService.addMessage(PayNotifyConfig.MESSAGE_TYPE, outBusinessId, orders.getOrderType(), null);
+                    notifyPayResult(mqMessage);
                 } else {
                     log.error("收到支付通知，更新订单状态失败.支付交易流水号:{},支付结果:{},订单号:{},状态:{}", payNo, trade_status, orderId, "600002");
                 }
@@ -137,6 +155,31 @@ public class OrderServiceImpl implements OrderService {
             }
 
         }
+    }
+
+    @Override
+    public void notifyPayResult(MqMessage mqMessage) {
+
+        String jsonString = JSON.toJSONString(mqMessage);
+        //创建一个持久化消息
+        MessageBuilderSupport<Message> messageObj = MessageBuilder.withBody(jsonString.getBytes(StandardCharsets.UTF_8)).setDeliveryMode(MessageDeliveryMode.PERSISTENT);
+
+        Long id = mqMessage.getId();
+        CorrelationData correlationData = new CorrelationData(id.toString());
+        correlationData.getFuture().addCallback(result->{
+            //正常
+            if (result.isAck()){
+                //消息发生成功
+                mqMessageService.completed(id);//删除消息
+            }else {
+                //消息发生失败
+            }
+
+        },ex->{
+            //发生异常
+
+        });
+        rabbitTemplate.convertAndSend(PayNotifyConfig.PAYNOTIFY_EXCHANGE_FANOUT,"",messageObj,correlationData);
     }
 
     @Transactional

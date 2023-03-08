@@ -1,4 +1,4 @@
-package com.xuecheng.orders.config;
+package com.xuecheng.learning.config;
 
 import org.springframework.amqp.core.*;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -16,12 +16,14 @@ public class PayNotifyConfig {
 
   //交换机
   public static final String PAYNOTIFY_EXCHANGE_FANOUT = "paynotify_exchange_fanout";
+  //支付通知队列
+  public static final String PAYNOTIFY_QUEUE = "paynotify_queue";
 
-  //支付结果处理反馈队列
+  //支付结果回复
   public static final String PAYNOTIFY_REPLY_QUEUE = "paynotify_reply_queue";
 
   //支付结果通知消息类型
-  public static final String MESSAGE_TYPE="payresult_notify";
+  public static final String MESSAGE_TYPE = "payresult_notify";
 
 
   //声明交换机
@@ -38,5 +40,10 @@ public class PayNotifyConfig {
       return QueueBuilder.durable(PAYNOTIFY_REPLY_QUEUE).build();
   }
 
+  //交换机和支付通知队列绑定
+  @Bean
+  public Binding binding_course_publish_queue(@Qualifier(PAYNOTIFY_QUEUE) Queue queue, @Qualifier(PAYNOTIFY_EXCHANGE_FANOUT) FanoutExchange exchange){
+    return BindingBuilder.bind(queue).to(exchange);
+  }
 
 }

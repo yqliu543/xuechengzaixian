@@ -1,5 +1,6 @@
 package com.xuecheng.orders.service;
 
+import com.xuecheng.messagesdk.model.po.MqMessage;
 import com.xuecheng.orders.model.dto.AddOrderDto;
 import com.xuecheng.orders.model.dto.PayRecordDto;
 import com.xuecheng.orders.model.dto.PayStatusDto;
@@ -30,4 +31,6 @@ public interface OrderService {
      * @date 2022/10/4 16:52
      */
     public void saveAliPayStatus(PayStatusDto payStatusDto);
+
+    public void notifyPayResult(MqMessage mqMessage);
 }
