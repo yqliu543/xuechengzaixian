@@ -39,6 +39,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Description:
@@ -260,11 +261,10 @@ public class CoursePublishServiceImpl implements CoursePublishService {
         } else {
             CoursePublish coursePublish = coursePublishMapper.selectById(courseId);
             if (coursePublish != null) {
-                redisTemplate.opsForValue().set("course:" + courseId, JSON.toJSONString(coursePublish));
+                redisTemplate.opsForValue().set("course:" + courseId, JSON.toJSONString(coursePublish),30, TimeUnit.SECONDS);
             }
             return coursePublish;
         }
-
     }
 
     private void saveCoursePublishMessage(Long courseId) {
