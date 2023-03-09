@@ -62,4 +62,7 @@ public interface CoursePublishService {
     public boolean saveCourseIndex(Long courseId);
 
     CoursePublish getCoursePublish(Long courseId);
+    CoursePublish getCoursePublishCache(Long courseId);
+
+
 }

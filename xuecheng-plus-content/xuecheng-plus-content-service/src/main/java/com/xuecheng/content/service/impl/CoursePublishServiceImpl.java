@@ -26,6 +26,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
@@ -66,6 +67,8 @@ public class CoursePublishServiceImpl implements CoursePublishService {
     private MediaServiceClient mediaServiceClient;
     @Autowired
     private SearchServiceClient searchServiceClient;
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     @Override
     public CoursePreviewDto getCoursePreviewInfo(Long courseId) {
@@ -245,6 +248,23 @@ public class CoursePublishServiceImpl implements CoursePublishService {
     public CoursePublish getCoursePublish(Long courseId) {
         CoursePublish coursePublish = coursePublishMapper.selectById(courseId);
         return coursePublish ;
+    }
+
+    @Override
+    public CoursePublish getCoursePublishCache(Long courseId) {
+        Object jsonObj = redisTemplate.opsForValue().get("course:" + courseId);
+        if (jsonObj!=null){
+            String jsonStr = jsonObj.toString();
+            CoursePublish coursePublish = JSON.parseObject(jsonStr, CoursePublish.class);
+            return coursePublish;
+        }else {
+            CoursePublish coursePublish = coursePublishMapper.selectById(courseId);
+            if (coursePublish!=null){
+                redisTemplate.opsForValue().set("course:" + courseId,JSON.toJSONString(coursePublish));
+            }
+            return coursePublish ;
+        }
+
     }
 
     private void saveCoursePublishMessage(Long courseId) {
