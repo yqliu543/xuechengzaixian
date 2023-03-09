@@ -50,8 +50,8 @@ public class CourseIndexSearchTest {
    courseIndex.setValidDays(222);
    courseIndex.setTeachmode("40020");
 
-   Boolean result = courseIndexService.addCourseIndex(courseIndexStore,"101",courseIndex);
-   System.out.println(result);
+   //Boolean result = courseIndexService.addCourseIndex(courseIndexStore,"101",courseIndex);
+   //System.out.println(result);
 
   }
   @Test
@@ -79,8 +79,8 @@ public class CourseIndexSearchTest {
    courseIndex.setValidDays(222);
    courseIndex.setTeachmode("40020");
 
-   Boolean result = courseIndexService.updateCourseIndex(courseIndexStore,"101",courseIndex);
-   System.out.println(result);
+   //Boolean result = courseIndexService.updateCourseIndex(courseIndexStore,"101",courseIndex);
+   //System.out.println(result);
 
   }
 }

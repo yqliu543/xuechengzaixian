@@ -6,7 +6,7 @@
         <groupId>com.xuecheng</groupId>
         <artifactId>xuechengzaixian</artifactId>
         <version>1.0-SNAPSHOT</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath>../pom.xml</relativePath> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.xuecheng</groupId>
     <artifactId>xuecheng-plus-base</artifactId>
@@ -30,14 +30,14 @@
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
         </dependency>
-        
+
         <!-- servlet Api 依赖 -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>
         </dependency>
-        
+
         <!-- 通用组件 -->
         <dependency>
             <groupId>commons-lang</groupId>
@@ -71,15 +71,11 @@
             <version>1.17</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.google.zxing</groupId>
             <artifactId>core</artifactId>
             <version>3.3.3</version>
         </dependency>
-        
+
         <dependency>
             <groupId>com.google.zxing</groupId>
             <artifactId>javase</artifactId>
